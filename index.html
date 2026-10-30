@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#20242b">
 <title>TrackSide Cafe | Biratnagar</title>
 <meta name="description" content="TrackSide Cafe in Biratnagar: private curtained cabins, outdoor seating under prayer flags and string lights, and momo worth the trip. Opens 1:30 PM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +35,7 @@ a{color:inherit}
 nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
 .brand{font:800 1.25rem 'Bricolage Grotesque',Georgia,serif;text-decoration:none;color:var(--white)}
 .navlinks{display:flex;gap:22px;align-items:center;font-weight:600}
-.navlinks a{text-decoration:none}
+.navlinks a{text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
 .navlinks a:hover{color:var(--yellow)}
 @media(max-width:600px){.navlinks .hide{display:none}}
 
@@ -131,6 +132,13 @@ dialog .btn{display:block;margin:0 auto;background:none;color:inherit;font:inher
 .dock{display:none;position:fixed;left:0;right:0;bottom:0;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--deep);border-top:1px solid var(--line);z-index:5}
 .dock .btn{flex:1;text-align:center;padding:11px}
 @media(max-width:759px){.dock{display:flex}body{padding-bottom:76px}}
+.track{cursor:pointer}
+.search{display:block;width:100%;max-width:420px;min-height:44px;margin-bottom:16px;padding:10px 16px;border:2px solid var(--line);border-radius:6px;background:var(--deep);color:var(--linen);font:inherit;-webkit-appearance:none;appearance:none}
+.search::placeholder{color:var(--muted)}
+button.btn{font:inherit;font-weight:600;background:none;color:inherit;cursor:pointer}
+.lbbar{display:flex;gap:10px;justify-content:center}.lbbar .btn{margin:0;padding:10px 16px}
+.track .lbl{fill:var(--white);font:800 18px 'Bricolage Grotesque',Georgia,serif}
+.hint{margin-top:10px;text-align:center;color:var(--muted);font-size:.9rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -164,18 +172,24 @@ dialog .btn{display:block;margin:0 auto;background:none;color:inherit;font:inher
         </ul>
       </div>
 
-      <svg class="track" viewBox="0 0 520 300" role="img" aria-label="A painted oval track with a car lap marker">
+      <div class="trackwrap">
+      <svg class="track" viewBox="0 0 520 300" role="button" tabindex="0" aria-label="Painted oval track with a car circling the sitting area in the middle. Press to pause or resume the car.">
+        <defs><radialGradient id="glow"><stop offset="0" stop-color="#f2b632" stop-opacity=".35"/><stop offset="1" stop-color="#f2b632" stop-opacity="0"/></radialGradient></defs>
         <ellipse cx="260" cy="150" rx="250" ry="130"/>
         <ellipse class="dash" cx="260" cy="150" rx="205" ry="102"/>
         <ellipse cx="260" cy="150" rx="160" ry="74"/>
         <ellipse class="dash" cx="260" cy="150" rx="115" ry="46"/>
         <line class="start" x1="10" y1="150" x2="145" y2="150"/>
-        <text x="260" y="155" text-anchor="middle">your table is here</text>
+        <circle cx="260" cy="150" r="56" fill="url(#glow)"/>
+        <text class="lbl" x="260" y="148" text-anchor="middle">Sitting area</text>
+        <text x="260" y="168" text-anchor="middle">your table is here</text>
         <path id="lap" d="M 55 150 a 205 102 0 1 0 410 0 a 205 102 0 1 0 -410 0" fill="none"/>
         <circle r="9" fill="#e0503c" stroke="#f6f2e9" stroke-width="3">
-          <animateMotion id="car" dur="7s" repeatCount="1" fill="freeze" rotate="auto"><mpath href="#lap"/></animateMotion>
+          <animateMotion id="car" dur="9s" repeatCount="indefinite" rotate="auto"><mpath href="#lap"/></animateMotion>
         </circle>
       </svg>
+      <p class="hint">Tap the track to pause or resume the car.</p>
+      </div>
     </div>
   </div>
 </header>
@@ -209,6 +223,7 @@ dialog .btn{display:block;margin:0 auto;background:none;color:inherit;font:inher
     <div class="wrap">
       <h2>What to order</h2>
       <p class="sub">Momo is the dish visitors mention first. Ask the team about today’s specials.</p>
+      <input class="search" id="q" type="search" placeholder="Search the menu" aria-label="Search the menu" autocomplete="off">
       <div class="tabs" role="tablist" aria-label="Menu sections">
         <button class="tab" role="tab" aria-selected="true" data-cat="snacks">Snacks</button>
         <button class="tab" role="tab" aria-selected="false" data-cat="drinks">Drinks</button>
@@ -255,6 +270,8 @@ dialog .btn{display:block;margin:0 auto;background:none;color:inherit;font:inher
         <div class="cta">
           <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=TrackSide+Cafe+Biratnagar" target="_blank" rel="noopener">Get directions</a>
           <a class="btn" href="tel:+9779810445279">Call now</a>
+          <button class="btn" type="button" id="copyAddr">Copy address</button>
+          <button class="btn" type="button" id="share">Share</button>
         </div>
       </div>
       <iframe class="map" title="TrackSide Cafe on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=TrackSide+Cafe+Biratnagar&output=embed"></iframe>
@@ -262,7 +279,7 @@ dialog .btn{display:block;margin:0 auto;background:none;color:inherit;font:inher
   </section>
 </main>
 
-<dialog id="lb" aria-label="Photo viewer"><img alt=""><button class="btn" type="button">Close</button></dialog>
+<dialog id="lb" aria-label="Photo viewer"><img alt=""><div class="lbbar"><button class="btn" type="button" data-d="-1">Previous</button><button class="btn" type="button" data-d="0">Close</button><button class="btn" type="button" data-d="1">Next</button></div></dialog>
 
 <div class="dock">
   <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=TrackSide+Cafe+Biratnagar" target="_blank" rel="noopener">Directions</a>
@@ -285,7 +302,7 @@ dialog .btn{display:block;margin:0 auto;background:none;color:inherit;font:inher
     s.style.transform='rotate('+((i%2?1:-1)*(2+i%3))+'deg)';f.appendChild(s);}
   // one lap on load, skipped for reduced motion
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    var a=document.getElementById('car');a&&a.remove();
+    var a=document.getElementById('car');if(a){var c=a.parentNode;a.remove();c.setAttribute('cx',55);c.setAttribute('cy',150);var h=document.querySelector('.hint');h&&h.remove();}
   }
 })();
 
@@ -295,18 +312,23 @@ var MENU={
   drinks:[['Milk tea','Hot and classic.'],['Hot coffee','For a slow evening.'],['Cold coffee','Iced and sweet.'],['Lemon iced tea','Sharp and cooling.']]
 };
 var list=document.getElementById('menuList'),tabs=document.querySelectorAll('.tab');
+var cur='snacks';
 function show(cat){
-  list.innerHTML='';
-  MENU[cat].forEach(function(it){
+  cur=cat;list.innerHTML='';
+  var q=document.getElementById('q').value.trim().toLowerCase();
+  var items=q?MENU.snacks.concat(MENU.drinks).filter(function(it){return (it[0]+' '+it[1]).toLowerCase().indexOf(q)>-1;}):MENU[cat];
+  if(!items.length){var n=document.createElement('li');n.textContent='Nothing matches that. Try another word.';list.appendChild(n);}
+  items.forEach(function(it){
     var li=document.createElement('li'),d=document.createElement('div'),h=document.createElement('h3'),p=document.createElement('p');
     h.textContent=it[0];p.textContent=it[1];d.appendChild(h);d.appendChild(p);li.appendChild(d);
     if(it[2]){var pr=document.createElement('span');pr.className='price';pr.textContent=it[2];li.appendChild(pr);}
     list.appendChild(li);
   });
-  tabs.forEach(function(t){t.setAttribute('aria-selected',t.dataset.cat===cat);});
+  tabs.forEach(function(t){t.setAttribute('aria-selected',!q&&t.dataset.cat===cat);});
 }
 tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.cat);});});
 show('snacks');
+document.getElementById('q').addEventListener('input',function(){show(cur);});
 
 // PHOTOS. EDIT: put your pictures in an "images" folder next to index.html. Change a file name or caption here if needed.
 var PHOTOS={
@@ -324,16 +346,51 @@ document.querySelectorAll('[data-slot]').forEach(function(fig){
   var p=PHOTOS[fig.dataset.slot];if(!p)return;
   fig.dataset.file=p[0];
   var im=new Image();im.alt=p[1];im.loading='lazy';im.decoding='async';
-  im.onload=function(){fig.classList.add('has');};
+  im.onload=function(){fig.classList.add('has');if(fig.parentNode.classList.contains('grid')){fig.tabIndex=0;fig.setAttribute('role','button');fig.setAttribute('aria-label','View larger: '+p[1]);}};
   im.onerror=function(){im.remove();};
   im.src=p[0];fig.appendChild(im);
 });
-var lb=document.getElementById('lb'),lbi=lb.querySelector('img');
+var lb=document.getElementById('lb'),lbi=lb.querySelector('img'),idx=0;
+function pics(){return [].slice.call(document.querySelectorAll('.grid figure.has img'));}
+function openLb(){var a=pics()[idx];lbi.src=a.src;lbi.alt=a.alt;if(!lb.open)lb.showModal();}
+function step(d){var n=pics().length;idx=(idx+d+n)%n;openLb();}
 document.querySelector('.grid').addEventListener('click',function(e){
   var im=e.target.closest('figure.has img');if(!im)return;
-  lbi.src=im.src;lbi.alt=im.alt;lb.showModal();
+  idx=pics().indexOf(im);openLb();
 });
-lb.addEventListener('click',function(e){if(e.target!==lbi)lb.close();});
+lb.addEventListener('click',function(e){
+  var b=e.target.closest('[data-d]');
+  if(b){var d=+b.dataset.d;if(d)step(d);else lb.close();}
+  else if(e.target===lb)lb.close();
+});
+lb.addEventListener('keydown',function(e){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+var sx=0;
+lbi.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+lbi.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)step(dx<0?1:-1);});
+
+// Tap the track to pause or resume the car
+var car=document.getElementById('car'),tr=document.querySelector('.track');
+if(car){
+  var tog=function(){if(tr.animationsPaused())tr.unpauseAnimations();else tr.pauseAnimations();};
+  tr.addEventListener('click',tog);
+  tr.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog();}});
+}
+
+// Copy address and share
+var ADDR='TrackSide Cafe, Opposite Golden Health College, Shreeram Path, Mills Area, Biratnagar 56613';
+function flash(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1800);}
+document.getElementById('copyAddr').addEventListener('click',function(){
+  var b=this;
+  (navigator.clipboard?navigator.clipboard.writeText(ADDR):Promise.reject()).then(function(){flash(b,'Copied');},function(){flash(b,'Copy failed');});
+});
+document.getElementById('share').addEventListener('click',function(){
+  var b=this;
+  if(navigator.share){navigator.share({title:'TrackSide Cafe',text:ADDR,url:location.href}).catch(function(){});}
+  else if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){flash(b,'Link copied');});}
+});
+document.querySelector('.grid').addEventListener('keydown',function(e){
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches('figure.has')){e.preventDefault();e.target.querySelector('img').click();}
+});
 </script>
 </body>
 </html>
